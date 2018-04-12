@@ -6,3 +6,8 @@ LABEL authors="phil.ewels@scilifelab.se" \
 COPY environment.yml /
 RUN conda env create -f /environment.yml && conda clean -a
 ENV PATH /opt/conda/envs/nfcore-rnaseq/bin:$PATH
+
+################## Hex specific ###########################
+RUN mkdir -p /researchdata/fhgfs
+RUN mkdir -p /scratch
+
