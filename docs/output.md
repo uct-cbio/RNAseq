@@ -1,6 +1,4 @@
-# nfcore/RNAseq Output
-
-nfcore/RNAseq is the new RNA-seq Best Practice pipeline used by the [National Genomics Infrastructure](https://ngisweden.scilifelab.se/) at [SciLifeLab](https://www.scilifelab.se/platforms/ngi/) in Stockholm, Sweden.
+# nf-core/rnaseq: Output
 
 This document describes the output produced by the pipeline. Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.
 
@@ -12,15 +10,15 @@ and processes data using the following steps:
 * [TrimGalore](#trimgalore) - adapter trimming
 * [STAR](#star) - alignment
 * [RSeQC](#rseqc) - RNA quality control metrics
-   - [BAM stat](#bam-stat)
-   - [Infer experiment](#infer-experiment)
-   - [Junction saturation](#junction-saturation)
-   - [RPKM saturation](#rpkm-saturation)
-   - [Read duplication](#read-duplication)
-   - [Inner distance](#inner-distance)
-   - [Gene body coverage](#gene-body-coverage)
-   - [Read distribution](#read-distribution)
-   - [Junction annotation](#junction-annotation)
+  * [BAM stat](#bam-stat)
+  * [Infer experiment](#infer-experiment)
+  * [Junction saturation](#junction-saturation)
+  * [RPKM saturation](#rpkm-saturation)
+  * [Read duplication](#read-duplication)
+  * [Inner distance](#inner-distance)
+  * [Gene body coverage](#gene-body-coverage)
+  * [Read distribution](#read-distribution)
+  * [Junction annotation](#junction-annotation)
 * [dupRadar](#dupradar) - technical / biological read duplication
 * [Preseq](#preseq) - library complexity
 * [featureCounts](#featurecounts) - gene counts, biotype counts, rRNA estimation.
@@ -43,7 +41,7 @@ For further reading and documentation see the [FastQC help](http://www.bioinform
   * zip file containing the FastQC report, tab-delimited data file and plot images
 
 ## TrimGalore
-The nfcore/RNAseq BP 2.0 pipeline uses [TrimGalore](http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/) for removal of adapter contamination and trimming of low quality regions. TrimGalore uses [Cutadapt](https://github.com/marcelm/cutadapt) for adapter trimming and runs FastQC after it finishes.
+The nfcore/rnaseq pipeline uses [TrimGalore](http://www.bioinformatics.babraham.ac.uk/projects/trim_galore/) for removal of adapter contamination and trimming of low quality regions. TrimGalore uses [Cutadapt](https://github.com/marcelm/cutadapt) for adapter trimming and runs FastQC after it finishes.
 
 MultiQC reports the percentage of bases removed by TrimGalore in the _General Statistics_ table, along with a line plot showing where reads were trimmed.
 
@@ -94,7 +92,7 @@ These are all quality metrics files and contains the raw data used for the plots
 
 This script gives numerous statistics about the aligned BAM files produced by STAR. A typical output looks as follows:
 
-```
+```txt
 #Output (all numbers are read count)
 #==================================================
 Total records:                                 41465027
@@ -130,12 +128,13 @@ Example output from an unstranded (~50% sense/antisense) library of paired end d
 
 **From the `infer_experiment.txt` file:**
 
-```
+```txt
 This is PairEnd Data
 Fraction of reads failed to determine: 0.0409
 Fraction of reads explained by "1++,1--,2+-,2-+": 0.4839
 Fraction of reads explained by "1+-,1-+,2++,2--": 0.4752
 ```
+
 RSeQC documentation: [infer_experiment.py](http://rseqc.sourceforge.net/#infer-experiment-py)
 
 
@@ -193,19 +192,20 @@ RSeQC documentation: [read_duplication.py](http://rseqc.sourceforge.net/#read-du
 * `Sample_rseqc.inner_distance_freq.txt`
 * `Sample_rseqc.inner_distance_plot.r`
 
-The inner distance script tries to calculate the inner distance (or insert size) between two paired RNA reads. This is calculated as the start of read 1 to the end of read 2:
+The inner distance script tries to calculate the inner distance between two paired RNA reads. It is the distance between the end of read 1 to the start of read 2,
+and it is sometimes confused with the insert size (see [this blog post](http://thegenomefactory.blogspot.com.au/2013/08/paired-end-read-confusion-library.html) for disambiguation):
 ![inner distance concept](images/inner_distance_concept.png)
-> _Credit: RSeQC documentation._
+> _Credit: modified from RSeQC documentation._
 
 Note that values can be negative if the reads overlap. A typical set of samples may look like this:
 ![Inner distance](images/rseqc_inner_distance_plot.png)
 
-This plot will not be generated for single-end data. Very short insert sizes are often seen in old or degraded samples (_eg._ FFPE).
+This plot will not be generated for single-end data. Very short inner distances are often seen in old or degraded samples (_eg._ FFPE).
 
 RSeQC documentation: [inner_distance.py](http://rseqc.sourceforge.net/#inner-distance-py)
 
 ### Gene body coverage
-**NB:** In nfcore/RNAseq we subsample this to 1 Million reads. This speeds up the speed significantly and has no to little effect on the results.
+**NB:** In nfcore/rnaseq we subsample this to 1 Million reads. This speeds up this task significantly and has no to little effect on the results.
 
 **Output:**
 
@@ -337,6 +337,8 @@ StringTie outputs FPKM metrics for genes and transcripts as well as the transcri
 ## MultiQC
 [MultiQC](http://multiqc.info) is a visualisation tool that generates a single HTML report summarising all samples in your project. Most of the pipeline QC results are visualised in the report and further statistics are available in within the report data directory.
 
+The pipeline has special steps which allow the software versions used to be reported in the MultiQC output for future traceability.
+
 **Output directory: `results/multiqc`**
 
 * `Project_multiqc_report.html`
@@ -344,11 +346,4 @@ StringTie outputs FPKM metrics for genes and transcripts as well as the transcri
 * `Project_multiqc_data/`
   * Directory containing parsed statistics from the different tools used in the pipeline
 
-For more information about how to use MultiQC reports, see http://multiqc.info
-
----
-
-[![SciLifeLab](images/SciLifeLab_logo.png)](http://www.scilifelab.se/)
-[![National Genomics Infrastructure](images/NGI_logo.png)](https://ngisweden.scilifelab.se/)
-
----
+For more information about how to use MultiQC reports, see [http://multiqc.info](http://multiqc.info)

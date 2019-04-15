@@ -3,21 +3,11 @@
 # Command line argument processing
 args <- commandArgs(trailingOnly=TRUE)
 
-# R location
-rlocation <- NULL
-if(substr(args[1], 0, 10) == 'rlocation='){
-    rlocation <- substr(args[1], 11, nchar(args[1]))
-    args <- args[-1]
-}
-
 if (length(args) < 3) {
   stop("Usage: edgeR_heatmap_MDS.r <sample_1.bam> <sample_2.bam> <sample_3.bam> (more bam files optional)", call.=FALSE)
 }
 
 # Load / install required packages
-if (!is.null(rlocation)) {
-  .libPaths( c( rlocation, .libPaths() ) )
-}
 if (!require("limma")){
     source("http://bioconductor.org/biocLite.R")
     biocLite("limma", suppressUpdates=TRUE)
@@ -40,7 +30,7 @@ if (!require("gplots")) {
 # Load count column from all files into a list of data frames
 # Use data.tables fread as much much faster than read.table
 # Row names are GeneIDs
-temp <- lapply(args, fread, skip="Geneid", header=TRUE, colClasses=c(NA, rep("NULL", 5), NA))
+temp <- lapply(lapply(args, fread, skip="Geneid", header=TRUE), function(x){return(as.data.frame(x)[,c(1, ncol(x))])})
 
 # Merge into a single data frame
 merge.all <- function(x, y) {
