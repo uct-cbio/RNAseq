@@ -868,10 +868,11 @@ process markDuplicates {
     file "${bam.baseName}.markDups.bam.bai"
 
     script:
-    markdup_java_options = (task.memory.toGiga() > 8) ? ${params.markdup_java_options} : "\"-Xms" +  (task.memory.toGiga() / 2 )+"g "+ "-Xmx" + (task.memory.toGiga() - 8)+ "g\""
-
+   
     """
-    java -jar ${markdup_java_options} picard.jar MarkDuplicates \\
+    maxmem=\$(echo ${task.memory} | sed 's/.GB//g')
+	  maxmem_java=\$((\$maxmem - 8))
+    picard -Xmx\"\${maxmem_java}G\" -Xms2G MarkDuplicates \\
         INPUT=$bam \\
         OUTPUT=${bam.baseName}.markDups.bam \\
         METRICS_FILE=${bam.baseName}.markDups_metrics.txt \\
