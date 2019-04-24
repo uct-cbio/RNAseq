@@ -870,10 +870,8 @@ process markDuplicates {
     script:
    
     """
-    maxmem=\$(echo ${task.memory} | sed 's/.GB//g')
-    maxmem_java=\$((\$maxmem - 8))
-    initial_heap=\$((\$maxmem / 2))
-    picard -XX:ParallelGCThreads=${task.cpus} -Xmx\"\${maxmem_java}G\" -Xms\"\${initial_heap}G\" MarkDuplicates \\
+    markdup_java_options = (task.memory.toGiga() > 8) ? ${params.markdup_java_options} : "\"-Xms" +  (task.memory.toGiga() / 2 )+"g "+ "-Xmx" + (task.memory.toGiga() - 1)+ "g\""
+    picard -XX:ParallelGCThreads=${task.cpus} ${markdup_java_options} MarkDuplicates \\
         INPUT=$bam \\
         OUTPUT=${bam.baseName}.markDups.bam \\
         METRICS_FILE=${bam.baseName}.markDups_metrics.txt \\
