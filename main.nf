@@ -852,7 +852,7 @@ process preseq {
  * STEP 6 Mark duplicates
  */
 process markDuplicates {
-    tag "${bam.baseName}.sorted"
+    tag "${bam.baseName - '.sorted'}"
     publishDir "${params.outdir}/markDuplicates", mode: 'copy',
         saveAs: {filename -> filename.indexOf("_metrics.txt") > 0 ? "metrics/$filename" : "$filename"}
 
@@ -868,9 +868,8 @@ process markDuplicates {
     file "${bam.baseName}.markDups.bam.bai"
 
     script:
-   
-    """
     markdup_java_options = (task.memory.toGiga() > 8) ? ${params.markdup_java_options} : "\"-Xms" +  (task.memory.toGiga() / 2 )+"g "+ "-Xmx" + (task.memory.toGiga() - 1)+ "g\""
+    """
     picard -XX:ParallelGCThreads=${task.cpus} ${markdup_java_options} MarkDuplicates \\
         INPUT=$bam \\
         OUTPUT=${bam.baseName}.markDups.bam \\
