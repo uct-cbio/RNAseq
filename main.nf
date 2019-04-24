@@ -852,7 +852,7 @@ process preseq {
  * STEP 6 Mark duplicates
  */
 process markDuplicates {
-    tag "${bam.baseName - '.sorted'}"
+    tag "${bam.baseName}.sorted"
     publishDir "${params.outdir}/markDuplicates", mode: 'copy',
         saveAs: {filename -> filename.indexOf("_metrics.txt") > 0 ? "metrics/$filename" : "$filename"}
 
@@ -872,7 +872,8 @@ process markDuplicates {
     """
     maxmem=\$(echo ${task.memory} | sed 's/.GB//g')
     maxmem_java=\$((\$maxmem - 8))
-    picard -XX:ParallelGCThreads=8 -Xmx\"\${maxmem_java}G\" -Xms20G MarkDuplicates \\
+    initial_heap=\$((\$maxmem / 2))
+    picard -XX:ParallelGCThreads=$task.cpus -Xmx\"\${maxmem_java}G\" -Xms\"\${initial_heap}G\" MarkDuplicates \\
         INPUT=$bam \\
         OUTPUT=${bam.baseName}.markDups.bam \\
         METRICS_FILE=${bam.baseName}.markDups_metrics.txt \\
