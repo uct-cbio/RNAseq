@@ -873,7 +873,7 @@ process markDuplicates {
     maxmem=\$(echo ${task.memory} | sed 's/.GB//g')
     maxmem_java=\$((\$maxmem - 8))
     initial_heap=\$((\$maxmem / 2))
-    picard -XX:ParallelGCThreads=$task.cpus -Xmx\"\${maxmem_java}G\" -Xms\"\${initial_heap}G\" MarkDuplicates \\
+    picard -XX:ParallelGCThreads=${task.cpus} -Xmx\"\${maxmem_java}G\" -Xms\"\${initial_heap}G\" MarkDuplicates \\
         INPUT=$bam \\
         OUTPUT=${bam.baseName}.markDups.bam \\
         METRICS_FILE=${bam.baseName}.markDups_metrics.txt \\
