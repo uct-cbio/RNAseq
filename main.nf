@@ -871,7 +871,7 @@ process markDuplicates {
     markdup_java_options = (task.memory.toGiga() > 8) ? "\"-Xms" +  (task.memory.toGiga() / 2 )+"g "+ "-Xmx" + (task.memory.toGiga() - 1)+ "g\"" : ${params.markdup_java_options}
 
     """
-    picard -XX:ParallelGCThreads=5 ${markdup_java_options} MarkDuplicates \\
+    picard -XX:ParallelGCThreads=2 ${markdup_java_options} MarkDuplicates \\
         INPUT=$bam \\
         OUTPUT=${bam.baseName}.markDups.bam \\
         METRICS_FILE=${bam.baseName}.markDups_metrics.txt \\
