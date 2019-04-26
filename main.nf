@@ -868,7 +868,7 @@ process markDuplicates {
     file "${bam.baseName}.markDups.bam.bai"
 
     script:
-    markdup_java_options = (task.memory.toGiga() > 8) ? "\"-Xms" +  (task.memory.toGiga() / 2 )+"g "+ "-Xmx" + (task.memory.toGiga() - 1)+ "g\"" : ${params.markdup_java_options}
+    markdup_java_options = (task.memory.toGiga() > 8) ? "\"-Xms" +  (task.memory.toGiga() / 2 )+"g "+ "-Xmx" + (task.memory.toGiga() - 8)+ "g\"" : ${params.markdup_java_options}
 
     """
     picard -XX:ParallelGCThreads=2 ${markdup_java_options} MarkDuplicates \\
