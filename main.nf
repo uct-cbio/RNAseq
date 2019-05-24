@@ -872,14 +872,15 @@ process markDuplicates {
 
 
     """
-    picard -XX:ParallelGCThreads=5 ${markdup_java_options} MarkDuplicates \\
+    picard -XX:ParallelGCThreads=5 -Xmx32G -Xms16G MarkDuplicates \\
         INPUT=$bam \\
         OUTPUT=${bam.baseName}.markDups.bam \\
         METRICS_FILE=${bam.baseName}.markDups_metrics.txt \\
         REMOVE_DUPLICATES=false \\
         ASSUME_SORTED=true \\
         PROGRAM_RECORD_ID='null' \\
-        VALIDATION_STRINGENCY=LENIENT
+        VALIDATION_STRINGENCY=LENIENT \\
+        TMP_DIR=/tmp
     samtools index ${bam.baseName}.markDups.bam
     """
 }
