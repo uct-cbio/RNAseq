@@ -872,7 +872,7 @@ process markDuplicates {
 
 
     """
-    picard -XX:ParallelGCThreads=5 -Xmx32G -Xms16G MarkDuplicates \\
+    picard -XX:ParallelGCThreads=5 -Xmx16G -Xms16G MarkDuplicates \\
         INPUT=$bam \\
         OUTPUT=${bam.baseName}.markDups.bam \\
         METRICS_FILE=${bam.baseName}.markDups_metrics.txt \\
