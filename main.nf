@@ -712,7 +712,7 @@ if(params.aligner == 'hisat2'){
  * STEP 4 - RSeQC analysis
  */
 process rseqc {
-    label 'mid_memory'
+    label 'high_memory'
     tag "${bam_rseqc.baseName - '.sorted'}"
     publishDir "${params.outdir}/rseqc" , mode: 'copy',
         saveAs: {filename ->
