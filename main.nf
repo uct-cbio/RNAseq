@@ -973,6 +973,7 @@ process featureCounts {
  * STEP 9 - Merge featurecounts
  */
 process merge_featureCounts {
+    label 'mid_memory'
     tag "${input_files[0].baseName - '.sorted'}"
     publishDir "${params.outdir}/featureCounts", mode: 'copy'
 
