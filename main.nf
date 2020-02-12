@@ -525,7 +525,7 @@ process trim_galore {
         """
     } else {
         """
-        trim_galore --paired --phred64 --fastqc --gzip $c_r1 $c_r2 $tpc_r1 $tpc_r2 $reads
+        trim_galore --paired --fastqc --gzip $c_r1 $c_r2 $tpc_r1 $tpc_r2 $reads
         """
     }
 }
